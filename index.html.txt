@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperGufetto Lettore</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+
+  <header>
+    <img src="icons/icon-192.png" id="mascotte" alt="SuperGufetto">
+    <h1>SuperGufetto Lettore</h1>
+    <p class="subtitle">Tocca per leggere una sillaba alla volta!</p>
+  </header>
+
+  <button id="captureBtn" class="bigButton">📸 Scatta una foto</button>
+  <input type="file" accept="image/*" capture="camera" id="cameraInput" style="display:none">
+
+  <div id="textContainer">Scatta una foto di una pagina per iniziare.</div>
+
+  <script src="syllables.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
