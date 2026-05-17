@@ -1,3 +1,19 @@
+// Legge il testo OCR passato dallo Shortcut
+const params = new URLSearchParams(window.location.search);
+const ocrText = params.get("ocr");
+
+if (ocrText) {
+    const testo = decodeURIComponent(ocrText);
+    document.getElementById("textContainer").innerText = testo;
+
+    // Se vuoi far partire subito la sillabazione:
+    if (typeof sillabizzaTesto === "function") {
+        const sillabe = sillabizzaTesto(testo);
+        // Qui chiami la tua funzione che mostra il karaoke
+        // esempio:
+        // mostraKaraoke(sillabe);
+    }
+}
 const captureBtn = document.getElementById("captureBtn");
 const cameraInput = document.getElementById("cameraInput");
 const textContainer = document.getElementById("textContainer");
