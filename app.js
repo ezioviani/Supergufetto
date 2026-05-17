@@ -1,52 +1,70 @@
+import {
+  ImageSegmenter,
+  FilesetResolver,
+  TextRecognizer
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
+
+let recognizer;
+let sillabe = [];
+let indice = 0;
+
 const captureBtn = document.getElementById("captureBtn");
 const cameraInput = document.getElementById("cameraInput");
 const textContainer = document.getElementById("textContainer");
 
-let sillabe = [];
-let indice = 0;
+// 1. Carica modello ML Kit WebAPI
+(async () => {
+  const vision = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+  );
 
-const API_KEY = "K87693577088957"; // <-- la tua API key
+  recognizer = await TextRecognizer.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath:
+        "https://storage.googleapis.com/mediapipe-models/text_recognizer/text_recognizer/float16/1/text_recognizer.task"
+    }
+  });
+})();
 
+// 2. Scatto foto
 captureBtn.addEventListener("click", () => cameraInput.click());
 
+// 3. OCR con ML Kit WebAPI
 cameraInput.addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (!file) return;
 
   textContainer.innerText = "Sto leggendo il testo...";
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("language", "ita");
-  formData.append("isOverlayRequired", "false");
-  formData.append("detectOrientation", "true");
-  formData.append("scale", "true");
-  formData.append("OCREngine", "2");
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
 
-  const res = await fetch("https://api.ocr.space/parse/image", {
-    method: "POST",
-    headers: { apikey: API_KEY },
-    body: formData
-  });
+  img.onload = async () => {
+    const result = recognizer.recognize(img);
+    const testo = result.text || "";
 
-  const data = await res.json();
-  const testo = data.ParsedResults?.[0]?.ParsedText?.trim() || "";
+    if (!testo.trim()) {
+      textContainer.innerText = "Non ho trovato testo leggibile.";
+      return;
+    }
 
-  if (!testo) {
-    textContainer.innerText = "Non ho trovato testo leggibile.";
-    return;
-  }
+    // 4. Sillabazione
+    sillabe = sillabizza(testo);
+    indice = 0;
 
-  sillabe = sillabizza(testo);
-  indice = 0;
-  render();
+    // 5. Mostra sillabe
+    render();
+  };
 });
 
+// 6. Tap per avanzare
 textContainer.addEventListener("click", () => {
   if (!sillabe.length) return;
   indice = (indice + 1) % sillabe.length;
   render();
 });
+
+// --- Funzioni ---
 
 function render() {
   textContainer.innerHTML = "";
@@ -89,6 +107,7 @@ function sillabizzaParola(p) {
   if (c) s.push(c);
   return s;
 }
+
 
 
 
