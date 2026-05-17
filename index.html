@@ -12,52 +12,42 @@
       background: #f5f5f5;
     }
 
-    h1 {
-      font-size: 1.4rem;
-      margin-bottom: 12px;
-    }
-
     #captureBtn {
-      display: inline-block;
-      padding: 10px 16px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: none;
+      padding: 12px 18px;
       background: #ff9800;
       color: white;
-      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
       cursor: pointer;
       margin-bottom: 16px;
     }
 
     #textContainer {
-      min-height: 120px;
-      padding: 12px;
       background: white;
+      padding: 16px;
       border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      font-size: 1.2rem;
+      min-height: 120px;
+      font-size: 1.3rem;
       line-height: 1.6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <h1>Supergufetto</h1>
 
   <button id="captureBtn">📸 Scatta una foto</button>
-  <input
-    id="cameraInput"
-    type="file"
-    accept="image/*"
-    capture="environment"
-    style="display:none"
-  />
+  <input id="cameraInput" type="file" accept="image/*" capture="environment" style="display:none">
 
-  <div id="textContainer">
-    Tocca “Scatta una foto”, poi tocca il testo per cambiare sillaba.
-  </div>
+  <div id="textContainer">Tocca “Scatta una foto” per iniziare.</div>
 
-  <!-- app.js come modulo ES -->
+  <!-- ML Kit WebAPI UMD -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.js"></script>
+
+  <!-- Il tuo JS -->
   <script src="app.js"></script>
+
 </body>
 </html>
+
