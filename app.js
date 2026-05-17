@@ -5,9 +5,8 @@ const textContainer = document.getElementById("textContainer");
 let sillabe = [];
 let indice = 0;
 
-const API_KEY = "K87693577088957";
+const API_KEY = "K87693577088957"; // <-- la tua API key
 
-// 1. Scatto foto
 captureBtn.addEventListener("click", () => cameraInput.click());
 
 cameraInput.addEventListener("change", async (event) => {
@@ -16,12 +15,13 @@ cameraInput.addEventListener("change", async (event) => {
 
   textContainer.innerText = "Sto leggendo il testo...";
 
-  // 2. OCR con OCR.space + API KEY
   const formData = new FormData();
   formData.append("file", file);
   formData.append("language", "ita");
-  formData.append("OCREngine", "2");
+  formData.append("isOverlayRequired", "false");
+  formData.append("detectOrientation", "true");
   formData.append("scale", "true");
+  formData.append("OCREngine", "2");
 
   const res = await fetch("https://api.ocr.space/parse/image", {
     method: "POST",
@@ -37,22 +37,16 @@ cameraInput.addEventListener("change", async (event) => {
     return;
   }
 
-  // 3. Sillabazione
   sillabe = sillabizza(testo);
   indice = 0;
-
-  // 4. Mostra sillabe
   render();
 });
 
-// 5. Tap per avanzare
 textContainer.addEventListener("click", () => {
   if (!sillabe.length) return;
   indice = (indice + 1) % sillabe.length;
   render();
 });
-
-// --- Funzioni ---
 
 function render() {
   textContainer.innerHTML = "";
@@ -70,13 +64,11 @@ function render() {
 function sillabizza(testo) {
   const parole = testo.split(/\s+/);
   const out = [];
-
   parole.forEach(parola => {
     const s = sillabizzaParola(parola);
     s.forEach(x => out.push(x));
     out.push(" ");
   });
-
   return out;
 }
 
@@ -84,13 +76,11 @@ function sillabizzaParola(p) {
   const vocali = "aeiouàèéìòóùAEIOU";
   const s = [];
   let c = "";
-
   for (let i = 0; i < p.length; i++) {
     c += p[i];
     const v = vocali.includes(p[i]);
     const next = p[i + 1] || "";
     const nextV = vocali.includes(next);
-
     if (v && (!next || !nextV)) {
       s.push(c);
       c = "";
@@ -99,6 +89,7 @@ function sillabizzaParola(p) {
   if (c) s.push(c);
   return s;
 }
+
 
 
 
