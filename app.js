@@ -5,6 +5,8 @@ const textContainer = document.getElementById("textContainer");
 let sillabe = [];
 let indice = 0;
 
+const API_KEY = "K87693577088957";
+
 // 1. Scatto foto
 captureBtn.addEventListener("click", () => cameraInput.click());
 
@@ -14,15 +16,16 @@ cameraInput.addEventListener("change", async (event) => {
 
   textContainer.innerText = "Sto leggendo il testo...";
 
-  // 2. OCR con OCR.space
+  // 2. OCR con OCR.space + API KEY
   const formData = new FormData();
   formData.append("file", file);
   formData.append("language", "ita");
-  formData.append("OCREngine", "2"); // più preciso
+  formData.append("OCREngine", "2");
   formData.append("scale", "true");
 
   const res = await fetch("https://api.ocr.space/parse/image", {
     method: "POST",
+    headers: { apikey: API_KEY },
     body: formData
   });
 
@@ -71,7 +74,7 @@ function sillabizza(testo) {
   parole.forEach(parola => {
     const s = sillabizzaParola(parola);
     s.forEach(x => out.push(x));
-    out.push(" "); // spazio come sillaba
+    out.push(" ");
   });
 
   return out;
@@ -96,6 +99,7 @@ function sillabizzaParola(p) {
   if (c) s.push(c);
   return s;
 }
+
 
 
 
