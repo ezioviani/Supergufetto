@@ -6,18 +6,33 @@ captureBtn.addEventListener("click", () => {
   cameraInput.click();
 });
 
-cameraInput.addEventListener("change", (event) => {
+cameraInput.addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = new Image();
-    img.src = e.target.result;
-    textContainer.innerHTML = "";
-    textContainer.appendChild(img);
-  };
-  reader.readAsDataURL(file);
+  textContainer.innerText = "Sto leggendo il testo...";
+
+  const imageUrl = URL.createObjectURL(file);
+
+  try {
+    const result = await Tesseract.recognize(imageUrl, "ita", {
+      logger: m => console.log(m)
+    });
+
+    const testo = result.data.text.trim();
+    if (!testo) {
+      textContainer.innerText = "Non ho trovato testo leggibile nell'immagine.";
+      return;
+    }
+
+    textContainer.innerText = testo;
+
+  } catch (err) {
+    console.error(err);
+    textContainer.innerText = "Errore durante il riconoscimento del testo.";
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
 });
 
 
