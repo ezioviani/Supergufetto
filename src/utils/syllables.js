@@ -1,0 +1,1 @@
+export function divideInSillabe(text){return text.toLowerCase().replace(/[^a-zàèéìòóù\s]/gi,'').split(' ').flatMap(word=>word.match(/[^aeiou]*[aeiou]+(?:[^aeiou]+(?=[^aeiou]|$))?/g)||[])}
